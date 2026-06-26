@@ -25,7 +25,7 @@ import DebugPanel from './components/DebugPanel';
 import RecapModal from './components/RecapModal';
 
 function BudgetopiaApp() {
-  const { profile, transactions, buildings, totalPoints, recoveryMission, onboarded,
+  const { profile, transactions, buildings, totalPoints, onboarded,
     updateProfile, completeOnboarding, refresh } = useGameState();
   const island = useMemo(() => getIsland(), [buildings]);
 
@@ -169,7 +169,7 @@ function BudgetopiaApp() {
       <Routes>
         <Route path="/" element={<Home profile={profile} transactions={transactions} buildings={buildings}
           island={island}
-          recoveryMission={recoveryMission} onHexClick={handleHexClick}
+          onHexClick={handleHexClick}
           onLogClick={() => setLogOpen(true)} />} />
         <Route path="/budget" element={<Budget profile={profile} transactions={transactions} refresh={refresh} userTier={userTier} />} />
         <Route path="/profile" element={<Profile profile={profile} transactions={transactions} onProfileChange={updateProfile} />} />

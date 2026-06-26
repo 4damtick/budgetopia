@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
   getProfile, saveProfile, getTransactions, getBuildings, getCategories,
-  getTotalPoints, getRecoveryMission, getCityLevel, isOnboarded, setOnboarded,
+  getTotalPoints, getCityLevel, isOnboarded, setOnboarded,
 } from './localStorage';
 
 export default function useGameState() {
@@ -9,7 +9,6 @@ export default function useGameState() {
   const [transactions, setTransactions] = useState([]);
   const [buildings, setBuildings] = useState([]);
   const [totalPoints, setTotalPoints] = useState(0);
-  const [recoveryMission, setRecoveryMission] = useState(null);
   const [cityLevel, setCityLevel] = useState(1);
   const [onboarded, setOnboardedState] = useState(false);
 
@@ -18,7 +17,6 @@ export default function useGameState() {
     setTransactions(getTransactions());
     setBuildings(getBuildings());
     setTotalPoints(getTotalPoints());
-    setRecoveryMission(getRecoveryMission());
     setCityLevel(getCityLevel());
     setOnboardedState(isOnboarded());
   }, []);
@@ -28,7 +26,6 @@ export default function useGameState() {
     setTransactions(getTransactions());
     setBuildings(getBuildings());
     setTotalPoints(getTotalPoints());
-    setRecoveryMission(getRecoveryMission());
     setCityLevel(getCityLevel());
   }, []);
 
@@ -43,6 +40,6 @@ export default function useGameState() {
     setOnboardedState(true);
   }, []);
 
-  return { profile, transactions, buildings, totalPoints, recoveryMission, cityLevel, onboarded,
+  return { profile, transactions, buildings, totalPoints, cityLevel, onboarded,
     updateProfile, completeOnboarding, refresh };
 }

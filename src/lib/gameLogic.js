@@ -1,8 +1,8 @@
 import {
   getProfile, getTransactions, getBuildings, getCategories,
-  getTotalPoints, getRecoveryMission, getCityLevel, getIslandData,
+  getTotalPoints, getCityLevel, getIslandData,
   saveProfile, saveTransactions, saveBuildings, saveCategories,
-  addTotalPoints, spendPoints, saveRecoveryMission, clearRecoveryMission,
+  addTotalPoints, spendPoints,
   setCityLevel, addTransaction, addBuilding, saveIslandData,
   getMonthlyRecaps, saveMonthlyRecaps, getSavingsTrackingStartedAt,
   setSavingsTrackingStartedAt, setTotalPoints, updateCategory,
@@ -567,8 +567,6 @@ export function logExpense(amount, category, date, note) {
 
   const totalPts = getTotalPoints();
   setCityLevel(calculateCityLevel(totalPts));
-  checkRecoveryMissionProgress(txn);
-
   return { success: true, pointsEarned, totalPoints: totalPts, cityLevel: calculateCityLevel(totalPts) };
 }
 
@@ -600,36 +598,10 @@ export function logMoneyReceived(amount, category, date, note) {
   return { success: true, moneyReceived: true, category: normalizedName, amount: numericAmount };
 }
 
-export function checkRecoveryMissionProgress(newTxn) {
-  const profile = getProfile();
-  const transactions = getTransactions();
-  if (!isOverBudget(profile, transactions)) { clearRecoveryMission(); return; }
-
-  let mission = getRecoveryMission();
-  if (!mission) mission = { count: 0, required: 3, maxAmount: 10 };
-
-  if (newTxn.amount <= mission.maxAmount) mission.count += 1;
-
-  if (mission.count >= mission.required) {
-    addTotalPoints(50);
-    clearRecoveryMission();
-    return { completed: true };
-  }
-
-  saveRecoveryMission(mission);
-  return { completed: false, mission };
-}
-
 export function checkBudgetStatus() {
   const profile = getProfile();
   const transactions = getTransactions();
-  if (isOverBudget(profile, transactions)) {
-    let mission = getRecoveryMission();
-    if (!mission) { mission = { count: 0, required: 3, maxAmount: 10 }; saveRecoveryMission(mission); }
-  } else {
-    clearRecoveryMission();
-  }
-  return { isOver: isOverBudget(profile, transactions), mission: getRecoveryMission() };
+  return { isOver: isOverBudget(profile, transactions) };
 }
 
 export function purchaseBuilding(buildingType) {
@@ -760,6 +732,18 @@ export function triggerWeeklyRecap() {
   }
 
   const { start, end } = getBudgetPeriodDates(cadence);
+
+  const shiftDays = cadence === 'daily' ? 1 : cadence === 'weekly' ? 7 : 31;
+  const allTxns = getTransactions();
+  const shifted = allTxns.map(t => {
+    const d = new Date(t.date);
+    if (d >= start && d <= end) {
+      d.setDate(d.getDate() - shiftDays);
+      return { ...t, date: d.toISOString().split('T')[0] };
+    }
+    return t;
+  });
+  saveTransactions(shifted);
 
   return {
     totalSpent,

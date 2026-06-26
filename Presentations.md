@@ -18,7 +18,34 @@ More specifically, you are asked to present in a video:
 
 ## Budgetopia — Presentation Answers
 
----
+### 1. Investor Pitch
+
+**Problem:** Budgeting apps are abandoned within weeks because they offer no reward loop — tracking feels like punishment.
+
+**Solution:** Budgetopia converts financial discipline into visible city growth. Every euro saved is a building placed. The city is a live visualisation of your financial health — sunny weather when under budget, gloomy when over.
+
+**Differentiation:**
+
+- No subscription, no backend, no data harvesting — privacy-first
+- Gamification is intrinsic (saving = building), not cosmetic (badges for logging in)
+
+**Growth path:**
+
+- Multiplayer islands (shared household budget → shared city)
+- Backend sync for cross-device + social comparison
+- Premium building packs / themes (cosmetic monetisation)
+- Financial institution partnerships (auto-import transactions)
+
+**Market:** 1.8B people globally lack effective personal budgeting tools. Fintech + gamification is a proven wedge (see: Duolingo for language, Habitica for habits).
+
+### **Demo flow:**
+
+* Onboarding — set monthly income + create budget categories
+* Log expenses → city points accumulate in top bar
+* Budget tab → see per-category spend bars, flip Week/Month, edit/delete transactions
+* Home map → tap a tile → buy a building → watch it appear on island
+* Debug panel → Test Recap → recap modal shows savings % + points earned
+* Profile → total saved since tracking started
 
 ### 1. Main Features
 
@@ -44,7 +71,7 @@ All data lives in `localStorage` under `budgetopia_*` keys — no backend, no au
 Money Received records `{ amount: -value, type: 'credit' }`. This negative amount naturally offsets all spending totals (`getTotalPeriodSpending`, `getCategorySpending`) without touching `allocatedAmount` — no special-case code needed anywhere downstream.
 
 **Hex map rendering**
-`HexGrid.jsx` computes a sorted render list (`renderItems`) via `useMemo` — tiles, decor, buildings ordered by Y for correct isometric depth. Each `HexTile` is an SVG with per-tile gradient defs. The entire map is a CSS-transformed div; pan/zoom only updates a single `{ scale, x, y }` state. `React.memo` + `useCallback` on tile click handlers means panning never re-renders individual tiles — only the transform updates.
+`HexGrid.jsx` computes a sorted render list (`renderItems`) via `useMemo` — tiles, decor, buildings ordered by Y for correct isometric depth. Each `HexTile` is an Scalable Vector Graphic with per-tile gradient defs. The entire map is a CSS-transformed div; pan/zoom only updates a single `{ scale, x, y }` state. `React.memo` + `useCallback` on tile click handlers means panning never re-renders individual tiles — only the transform updates.
 
 **Island generation**
 Seeded PRNG (`createSeededRandom`) ensures the same seed always produces the same island. Tiles grow from origin via constrained random walk, then terrain (grass/sand) is assigned based on coast edge count.
@@ -80,37 +107,7 @@ npx vite --port 4173 --host 0.0.0.0
 npm run build      # outputs dist/
 ```
 
-**Demo flow:**
-
-1. Onboarding — set monthly income + create budget categories
-2. Log expenses → city points accumulate in top bar
-3. Budget tab → see per-category spend bars, flip Week/Month, edit/delete transactions
-4. Home map → tap a tile → buy a building → watch it appear on island
-5. Debug panel → Test Recap → recap modal shows savings % + points earned
-6. Profile → total saved since tracking started
-
 ---
-
-### 4. Investor Pitch
-
-**Problem:** Budgeting apps are abandoned within weeks because they offer no reward loop — tracking feels like punishment.
-
-**Solution:** Budgetopia converts financial discipline into visible city growth. Every euro saved is a building placed. The city is a live visualisation of your financial health — sunny weather when under budget, gloomy when over.
-
-**Differentiation:**
-
-- No subscription, no backend, no data harvesting — privacy-first
-- Gamification is intrinsic (saving = building), not cosmetic (badges for logging in)
-- Mobile-first PWA-ready — zero install friction
-
-**Growth path:**
-
-- Multiplayer islands (shared household budget → shared city)
-- Backend sync for cross-device + social comparison
-- Premium building packs / themes (cosmetic monetisation)
-- Financial institution partnerships (auto-import transactions)
-
-**Market:** 1.8B people globally lack effective personal budgeting tools. Fintech + gamification is a proven wedge (see: Duolingo for language, Habitica for habits).
 
 ---
 
@@ -126,7 +123,7 @@ Why it was a good choice:
 - Reads and writes binary assets (PNG background removal via Python/Pillow) within the same session
 
 **Agent orchestration:**
-Single Claude Code session with caveman-mode compression active to reduce token usage. All changes implemented directly in the working directory with Vite hot-reload providing instant visual verification. No separate planning agents — architecture decisions made inline with implementation.
+Single Claude Code session. All changes implemented directly in the working directory with Vite hot-reload providing instant visual verification. No separate planning agents — architecture decisions made inline with implementation.
 
 ---
 
@@ -134,45 +131,23 @@ Single Claude Code session with caveman-mode compression active to reduce token 
 
 **To scale:**
 
-- Replace `localStorage` with a backend (Supabase/Firebase) — `localStorage.js` is the single swap point; all game logic is already decoupled from storage
 - Add user auth (no login currently — all data is device-local)
-- Add service worker + web manifest for PWA installability
+- More assets
 
 **Tech risks:**
 
-- `localStorage` has a 5–10MB browser limit — heavy transaction history will hit it; need migration to IndexedDB
-- Island seed stored client-side — users can reset/manipulate points via DevTools
-- No data backup — clearing browser storage loses everything
 - SVG hex grid rendering is CPU-bound at scale; 110+ tiles with per-tile gradient defs creates a large DOM; canvas rendering needed for larger maps
 
----
-
-### 7. Operations & Maintenance Challenges
-
-- **No tests** — only manual browser QA; adding Vitest + Playwright is the first maintenance priority
-- **localStorage schema migrations** — adding new fields (e.g. `type: 'credit'`) requires backwards-compatible reads; currently handled via optional chaining but no formal migration layer
-- **Lint/typecheck gaps** — `src/lib/` is excluded from both ESLint and TypeScript checks; game logic bugs won't be caught statically
-- **Image assets** — pixel art stored as loose files with no CDN; background removal done manually via Python script; needs an automated asset pipeline
-
-**Mitigations:**
-
-- Add `vitest` unit tests for `gameLogic.js` (pure functions, easy to test)
-- Add a `SCHEMA_VERSION` key to localStorage with a migration runner on app init
-- Extend `jsconfig.json` and `eslint.config.js` to cover `src/lib/`
-
----
-
-### 8. Security Risks
+### 7. Security Risks
 
 **For the operator:**
 
-- No backend = no server attack surface; but also no fraud detection
+- No backend = no server attack surface.
 - If monetised (in-app purchases), client-side point balance is trivially manipulable — all purchases must be validated server-side
-- No rate limiting on island generation or recap triggers — a bot could farm points client-side
 
 **For the user:**
 
 - All financial data stored unencrypted in `localStorage` — accessible to any JS running on the same origin (XSS risk)
 - No data export or backup — data loss is permanent if browser storage is cleared
-- No input sanitisation on category names/notes beyond `trim()` — low XSS risk since data is only rendered in the same origin, but worth hardening if server sync is added
+- No input sanitisation on category names/notes beyond `trim()`
 - Third-party dependencies (80+ npm packages) expand the supply chain attack surface; `npm audit` should be part of CI
