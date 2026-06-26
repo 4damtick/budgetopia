@@ -12,15 +12,11 @@ Log expenses, stay under budget, and earn city points to construct and upgrade b
 
 ## Features
 
-- **Expense logging** — log expenses by category with date and note; mark transactions as Money Received to offset category spending
-- **Budget categories** — create, edit, and delete named budget categories with allocated monthly amounts; Week/Month toggle for cadence view
-- **City points** — earn 1 point per expense logged; earn bonus points at recap time based on how much of your budget you saved
-- **Weekly/monthly recap** — trigger a recap to calculate `savedPercent × 10 × cadenceMultiplier` reward points
-- **Island city builder** — spend city points to purchase and place pixel-art buildings on a procedurally generated hex-grid island
-- **Tile decor clearing** — clear coconut trees and grass trees from tiles before building
+- **Expense logging** — log expenses by category with date and note; mark transactions as Money Received to offset category spending.
+- **Budget categories** — create, edit, and delete named budget categories with allocated monthly amounts.
+- **City points** — earn points per expense logged; earn bonus points at recap time based on how much of your budget you saved.
+- **Island city builder** — spend city points to purchase and place pixel-art buildings on an island.
 - **Profile & savings tracking** — track total savings over time with monthly recap history
-- **Recovery mission** — over-budget? Log 3 small expenses to earn a comeback bonus
-- **Debug panel** — reset all data or trigger recap during development
 
 ---
 
