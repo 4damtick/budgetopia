@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 232 19% 13%;
+    --foreground: 0 0% 100%;
+    --card: 228 12% 19%;
+    --card-foreground: 0 0% 100%;
+    --popover: 228 12% 19%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 151 100% 38%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 51 100% 50%;
+    --secondary-foreground: 43 80% 8%;
+    --muted: 229 12% 27%;
+    --muted-foreground: 228 8% 58%;
+    --accent: 197 50% 30%;
+    --accent-foreground: 197 40% 90%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 228 10% 24%;
+    --input: 228 10% 22%;
+    --ring: 151 100% 38%;
+    --chart-1: 151 100% 38%;
+    --chart-2: 51 100% 50%;
+    --chart-3: 197 50% 50%;
+    --chart-4: 43 70% 48%;
+    --chart-5: 27 80% 55%;
+    --radius: 0.5rem;
+    --font-heading: "Press Start 2P", ui-monospace, monospace;
+    --font-body: ui-sans-serif, system-ui, sans-serif;
+    --font-display: "Press Start 2P", ui-monospace, monospace;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --sidebar-background: 228 12% 16%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 151 100% 38%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 229 12% 27%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 228 10% 24%;
+    --sidebar-ring: 151 100% 38%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body;
+  }
+
+  #root {
+    min-height: 100vh;
+  }
+}
