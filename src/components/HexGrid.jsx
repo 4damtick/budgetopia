@@ -262,9 +262,6 @@ export default function HexGrid({ island, buildings, onHexClick, weather = 'sunn
 
   const handlePointerDown = event => {
     if (event.pointerType === 'mouse' && event.button !== 0) return;
-    if (event.pointerType !== 'touch') {
-      event.currentTarget.setPointerCapture?.(event.pointerId);
-    }
     interactionRef.current.isDragging = true;
     interactionRef.current.lastTapMoved = false;
     interactionRef.current.startX = event.clientX;
@@ -281,10 +278,7 @@ export default function HexGrid({ island, buildings, onHexClick, weather = 'sunn
     applyCamera(scale, interactionRef.current.originX + deltaX, interactionRef.current.originY + deltaY);
   };
 
-  const handlePointerUp = event => {
-    if (event.pointerType !== 'touch') {
-      event.currentTarget.releasePointerCapture?.(event.pointerId);
-    }
+  const handlePointerUp = () => {
     interactionRef.current.isDragging = false;
   };
 
